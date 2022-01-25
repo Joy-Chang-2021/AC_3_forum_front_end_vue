@@ -14,6 +14,7 @@
       <div class="col-md-6">
         <h3>最新評論</h3>
         <!-- 最新評論 -->
+        <NewestComments :comments="comments"/>
       </div>
     </div>
   </div>
@@ -22,6 +23,7 @@
 <script lang="ts">
 import NavTabs from '../components/NavTabs.vue'
 import NewestRestaurants from '../components/NewestRestaurants.vue'
+import NewestComments from '../components/NewestComments.vue'
 
 const dummyData = {
   "restaurants": [
@@ -534,7 +536,8 @@ export default {
   name: 'RestaurantsFeeds',
   components: {
     NavTabs,
-    NewestRestaurants
+    NewestRestaurants,
+    NewestComments
   },
   data () {
     return {
@@ -545,7 +548,7 @@ export default {
   methods: {
     fetchFeeds () {
       this.restaurants = dummyData.restaurants
-      this.comments = dummyData.comments
+      this.comments = dummyData.comments.filter(comment => comment.Restaurant && comment.text)
     }
   },
   created () {

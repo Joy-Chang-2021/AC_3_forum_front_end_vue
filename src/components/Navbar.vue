@@ -85,6 +85,7 @@ export default {
         ...this.currentUser,
         ...dummyUser.currentUser
       }
+      this.isAuthenticated = dummyUser.isAuthenticated
     }
   },
   created() {
