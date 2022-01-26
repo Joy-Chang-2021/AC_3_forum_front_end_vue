@@ -60,7 +60,6 @@
 <script>
 export default {
   props: {
-    // 名稱???
     initialRestaurant: {
       type: Object,
       required: true
