@@ -1,6 +1,5 @@
 <template>
   <div class="container py-5">
-    <h1>餐廳描述頁</h1>
     <!-- 餐廳資訊頁 RestaurantDetail -->
     <RestaurantDetail :initial-restaurant="restaurant"/>
     <hr />
@@ -10,12 +9,17 @@
       @after-delete-comment="afterDeleteComment"
     />
     <!-- 新增評論 CreateComment -->
+    <CreateComment 
+      :restaurant-id="restaurant.id"
+      @after-create-comment="afterCreateComment"
+    />
   </div>
 </template>
 
 <script>
 import RestaurantDetail from '../components/RestaurantDetail.vue'
 import RestaurantComments from '../components/RestaurantComments.vue'
+import CreateComment from '../components/CreateComment.vue'
 
 const dummyData = {
   restaurant: {
@@ -103,10 +107,22 @@ const dummyData = {
   isLiked: false,
 };
 
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
+
 export default {
   components: {
     RestaurantDetail,
-    RestaurantComments
+    RestaurantComments,
+    CreateComment
   },
   data () {
     return {
@@ -122,6 +138,7 @@ export default {
         isFavorited: false,
         isLiked: false,
       },
+      currentUser: dummyUser.currentUser,
       restaurantComments: []
     }
   },
@@ -149,6 +166,21 @@ export default {
     afterDeleteComment(commentId) {
       // Question: 刪除API指定資料後，會及時取得重整後的資料並更新畫面? 或要先內部渲染新畫面、待之後再取得資料?
       this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
+    },
+    afterCreateComment(payload) {
+      // 觸發事件
+      // render 資料更新後的畫面
+      const { commentId, restaurantId, text } = payload
+      this.restaurantComments.push({
+        id: commentId,
+        RestaurantId: restaurantId,
+        text,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name
+        },
+        createdAt: new Date()
+      })
     }
   },
   created() {
