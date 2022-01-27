@@ -6,6 +6,7 @@
       <blockquote class="blockquote mb-0">
         <button
           v-if="currentUser.isAdmin"
+          @click.stop.prevent="handleDeleteButtonClick(comment.id)"
           type="button"
           class="btn btn-danger float-right"
         >
@@ -51,5 +52,11 @@ export default {
     };
   },
   mixins: [fromNowFilter],
+  methods: {
+    handleDeleteButtonClick(commentId) {
+      // todo發送請求： API 伺服器刪除 id 為 commentId 的評論
+      this.$emit('after-delete-comment', commentId)
+    }
+  }
 };
 </script>

@@ -5,7 +5,10 @@
     <RestaurantDetail :initial-restaurant="restaurant"/>
     <hr />
     <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments :restaurant-comments="restaurantComments"/>
+    <RestaurantComments   
+      :restaurant-comments="restaurantComments"
+      @after-delete-comment="afterDeleteComment"
+    />
     <!-- 新增評論 CreateComment -->
   </div>
 </template>
@@ -143,6 +146,10 @@ export default {
       }
       this.restaurantComments = Comments
     },
+    afterDeleteComment(commentId) {
+      // Question: 刪除API指定資料後，會及時取得重整後的資料並更新畫面? 或要先內部渲染新畫面、待之後再取得資料?
+      this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
+    }
   },
   created() {
     const id = this.$route.params
