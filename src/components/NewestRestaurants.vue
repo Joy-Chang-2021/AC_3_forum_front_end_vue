@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import { fromNowFilter } from '../utils/mixins'
 
 export default {
   props: {
@@ -27,12 +27,7 @@ export default {
       required: true
     }
   },
-  filters: {
-    fromNow(value) {
-      if (!value) return '-'
-      return moment(value).fromNow()
-    }
-  }
+  mixins: [fromNowFilter],
 }
 </script>
 
