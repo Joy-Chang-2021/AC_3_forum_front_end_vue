@@ -1,8 +1,13 @@
 <template>
   <div class="container py-5">
     <div class="mb-3">
-      <p>UserProfileCard.vue</p>
       <!-- UserProfileCard.vue -->
+      <UserProfileCard  
+        :user="user"
+        :is-current-user="user.id === currentUser.id"
+        :initial-following="isFollowed"
+        @following-handler="followingHandler"
+      />
     </div>
     <div class="row">
       <div class="col-md-4">
@@ -23,6 +28,7 @@
 </template>
 
 <script>
+import UserProfileCard from "../components/UserProfileCard.vue"
 
 const dummyData = {
   'profile': {
@@ -1198,12 +1204,55 @@ const dummyData = {
   },
   'isFollowed': false
 }
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
 
 export default {
+  name: 'User',
+  components: {
+    UserProfileCard
+  },
   data () {
     return {
-      data: dummyData
+      // 目前登入使用者
+      currentUser: dummyUser.currentUser,
+      // 所有資料
+      user: {},
+      isFollowed: false,
     }
+  },
+  methods: {
+    fetchUser() {
+      const { profile, isFollowed } = dummyData
+      this.user = {
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        image: profile.image,
+        commentsCount: profile.Comments.length,
+        favoritedRestaurantsCount: profile.FavoritedRestaurants.length,
+        followersCount: profile.Followers.length,
+        followingsCount: profile.Followings.length,
+      }
+      this.isFollowed = isFollowed
+    },
+    followingHandler (boolean) {
+      // 從 UI 元件接收並更新「追蹤狀態」true/false、並改變追蹤人數
+      this.isFollowed = boolean
+      if (boolean) this.user.followersCount ++
+      else this.user.followersCount --
+    }
+  },
+  created() {
+    this.fetchUser()
   }
 }
 </script>
