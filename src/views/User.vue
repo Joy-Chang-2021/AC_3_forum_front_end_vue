@@ -1232,15 +1232,16 @@ export default {
   methods: {
     fetchUser() {
       const { profile, isFollowed } = dummyData
+      const { id, name, email, image, Comments, FavoritedRestaurants, Followers, Followings } = profile
       this.user = {
-        id: profile.id,
-        name: profile.name,
-        email: profile.email,
-        image: profile.image,
-        commentsCount: profile.Comments.length,
-        favoritedRestaurantsCount: profile.FavoritedRestaurants.length,
-        followersCount: profile.Followers.length,
-        followingsCount: profile.Followings.length,
+        id,
+        name,
+        email,
+        image,
+        commentsCount: Comments.length,
+        favoritedRestaurantsCount: FavoritedRestaurants.length,
+        followersCount: Followers.length,
+        followingsCount: Followings.length,
       }
       this.isFollowed = isFollowed
     },
