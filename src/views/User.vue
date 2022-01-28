@@ -23,8 +23,10 @@
         <!-- UserCommentsCard.vue -->
         <UserCommentsCard :comments="comments"/>
         <br>
-        <p>UserFavoritedRestaurantsCard.vue</p>
         <!-- UserFavoritedRestaurantsCard.vue -->
+        <UserFavoritedRestaurantsCard
+          :favoritedRestaurants="favoritedRestaurants"
+        />
       </div>
     </div>
   </div>
@@ -35,6 +37,7 @@ import UserProfileCard from "../components/UserProfileCard.vue"
 import UserFollowingsCard from "../components/UserFollowingsCard.vue"
 import UserFollowersCard from "../components/UserFollowersCard.vue"
 import UserCommentsCard from "../components/UserCommentsCard.vue"
+import UserFavoritedRestaurantsCard from "../components/UserFavoritedRestaurantsCard.vue"
 
 const dummyData = {
   'profile': {
@@ -1227,7 +1230,8 @@ export default {
     UserProfileCard,
     UserFollowingsCard,
     UserFollowersCard,
-    UserCommentsCard
+    UserCommentsCard,
+    UserFavoritedRestaurantsCard
   },
   data () {
     return {
@@ -1238,7 +1242,8 @@ export default {
       isFollowed: false,
       followings: [],
       followers: [],
-      comments: []
+      comments: [],
+      favoritedRestaurants: []
     }
   },
   methods: {
@@ -1259,6 +1264,7 @@ export default {
       this.followings = Followings
       this.followers = Followers
       this.comments = Comments
+      this.favoritedRestaurants = FavoritedRestaurants
     },
     followingHandler (boolean) {
       // 從 UI 元件接收並更新「追蹤狀態」true/false、並改變追蹤人數
