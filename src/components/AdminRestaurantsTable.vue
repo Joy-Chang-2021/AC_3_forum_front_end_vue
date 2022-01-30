@@ -16,7 +16,12 @@
         <td>{{ restaurant.Category ? restaurant.Category.name : "未分類" }}</td>
         <td>{{ restaurant.name }}</td>
         <td class="d-flex justify-content-between">
-          <a href="#" class="btn btn-link">Show</a>
+          <router-link
+            :to="{ name: 'admin-restaurant', params: { id: restaurant.id } }"
+            class="btn btn-link"
+          >
+            Show
+          </router-link>
 
           <a href="#" class="btn btn-link">Edit</a>
 
@@ -1034,8 +1039,7 @@ const dummyData = [
     tel: "(637) 247-8734",
     address: "6519 Watsica Mall",
     opening_hours: "08:00",
-    description:
-      "Autem ut non quis est aut porro officiis occaecati dolores.",
+    description: "Autem ut non quis est aut porro officiis occaecati dolores.",
     image:
       "https://loremflickr.com/320/240/restaurant,food/?random=42.907122132790995",
     viewCounts: 0,
@@ -1049,7 +1053,7 @@ const dummyData = [
       updatedAt: "2022-01-24T13:30:57.000Z",
     },
   },
-]
+];
 
 export default {
   data() {
