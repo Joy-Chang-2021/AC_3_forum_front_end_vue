@@ -131,6 +131,21 @@ const dummyData = {
 };
 
 export default {
+  props: {
+    initialRestaurant: {
+      type: Object,
+      // 當資料不是必填時，使用 default 設定一組預設值
+      default: () => ({
+        name: '',
+        categoryId: '',
+        tel: '',
+        address: '',
+        description: '',
+        image: '',
+        openingHours: '',
+      })
+    }
+  },
   data() {
     return {
       restaurant: {
@@ -147,6 +162,10 @@ export default {
   },
   created() {
     this.fetchCategories();
+    this.restaurant = {
+      ...this.restaurant,
+      ...this.initialRestaurant
+    }
   },
   methods: {
     fetchCategories() {
