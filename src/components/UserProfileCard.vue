@@ -19,12 +19,15 @@
           <!-- 按鈕區 -->
           <form @submit.prevent.stop action="/following/3" method="POST" style="display: contents;">
             <!--「編輯」，僅本人可使用 -->
-            <button
+            <router-link 
               v-if="isCurrentUser"
-              type="submit" class="btn btn-primary"
+              :to="{ name: 'user-edit', params: { id: user.id }}"
             >
-              Edit
-            </button>
+              <button type="submit" class="btn btn-primary">
+                Edit
+              </button>
+            </router-link>
+            
             <!-- 追蹤、取消追蹤 -->
             <button
               v-else-if="initialFollowing"  
