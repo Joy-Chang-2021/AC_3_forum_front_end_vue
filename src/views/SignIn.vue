@@ -73,33 +73,35 @@ export default ({
     }
   },
   methods: {
-    handleSubmit () {
-      // 若 email、password 空白，跳出提示 & 結束此函式
-      // (預防 <input required> 屬性被修改的狀況)
-      if (!this.email || !this.password) {
-        Toast.fire({
-          icon: 'warning',
-          title: '請填入 email 和 password'
+    async handleSubmit () {
+      try {
+        // 若 email、password 空白，跳出提示 & 結束此函式
+        // (預防 <input required> 屬性被修改的狀況)
+        if (!this.email || !this.password) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請填入 email 和 password'
+          })
+          return
+        }
+        // 使按鈕暫停使用 (避免伺服器回應前、按鈕被重複點擊)
+        this.isProcessing = true
+        // 向後端伺服器送出請求
+        const response = await authorizationAPI.signIn({
+          // 注意：實際上，在 password 送出前須先進行加密 (後端會解密後驗證)
+          email: this.email,
+          password: this.password
         })
-        return
-      }
-      // 使按鈕暫停使用 (避免伺服器回應前、按鈕被重複點擊)
-      this.isProcessing = true
-      // 向後端伺服器送出請求
-      authorizationAPI.signIn({
-        // 注意：實際上，在 password 送出前須先進行加密 (後端會解密後驗證)
-        email: this.email,
-        password: this.password
-      }).then(response => {
         // 取得 API 請求後的資料
         const { data } = response
         // 驗證資料狀態
-        if (data.status !== "success") throw new Error(data.message)
+        if (data.status !== 'success') throw new Error(data.message)
         // 將 token 存放在 localStorage 內
         localStorage.setItem('token', data.token)
         // 成功登入後轉址到餐廳首頁
         this.$router.push('/restaurants')
-      }).catch(error => {
+      }
+      catch(error) {
         // 將密碼欄位清空
         this.password = ""
         // 顯示錯誤訊息
@@ -109,8 +111,7 @@ export default ({
         })
         // 使按鈕回復使用
         this.isProcessing = false
-        console.log('error', error)
-      })
+      }
     }
   }
 })
