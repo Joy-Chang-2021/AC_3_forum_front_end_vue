@@ -133,6 +133,14 @@ export default {
       default: false
     }
   },
+  watch: {
+    initialRestaurant (newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue
+      }
+    }
+  },
   data() {
     return {
       restaurant: {
@@ -150,10 +158,6 @@ export default {
   },
   created() {
     this.fetchCategories();
-    this.restaurant = {
-      ...this.restaurant,
-      ...this.initialRestaurant
-    }
   },
   methods: {
     async fetchCategories() {
