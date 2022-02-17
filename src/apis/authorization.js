@@ -7,5 +7,11 @@ export default {
       email,
       password
     })
+  },
+  signUp ( formData ) {
+    // 參數: Object
+    return apiHelper.post('/signup', {
+      ...formData
+    })
   }
 }
