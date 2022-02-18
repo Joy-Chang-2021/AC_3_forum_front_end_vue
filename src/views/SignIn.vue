@@ -98,6 +98,8 @@ export default ({
         if (data.status !== 'success') throw new Error(data.message)
         // 將 token 存放在 localStorage 內
         localStorage.setItem('token', data.token)
+        // 透過 vuex / setCurrentUser 把使用者資料存入 vuex / state 中
+        this.$store.commit('setCurrentUser', data.user)
         // 成功登入後轉址到餐廳首頁
         this.$router.push('/restaurants')
       }
