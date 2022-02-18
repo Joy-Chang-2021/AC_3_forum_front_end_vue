@@ -82,9 +82,17 @@ export default {
       required: true
     }
   },
+  watch: {
+    initialRestaurant (newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue
+      }
+    }
+  },
   data () {
     return {
-      restaurant: this.initialRestaurant
+      restaurant: this.initialRestaurant,
     }
   },
   methods: {
@@ -100,6 +108,6 @@ export default {
     deleteLike () {
       this.restaurant.isLiked = false
     }
-  }
+  },
 }
 </script>
