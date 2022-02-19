@@ -3,7 +3,7 @@
     <div class="row no-gutters">
       <!-- 圖片區 -->
       <div class="col-md-4">
-        <img :src="user.image" width="300px" height="300px">
+        <img :src="user.image | emptyImage" width="300px" height="300px">
       </div>
       <!-- 文字區 -->
       <div class="col-md-8">
@@ -31,14 +31,14 @@
             <!-- 追蹤、取消追蹤 -->
             <button
               v-else-if="initialFollowing"  
-              @click="followingHandler(false)"
+              @click="deleteFollowing(user.id)"
               type="submit" class="btn btn-danger mr-2"
             >
               取消追蹤
             </button>
             <button
               v-else 
-              @click="followingHandler(true)"
+              @click="addFollowing (user.id)"
               type="submit" class="btn btn-primary mr-2"
             >
               追蹤
@@ -52,7 +52,12 @@
 </template>
 
 <script>
+import usersAPI from '../apis/users'
+import { Toast } from '../utils/helpers'
+import { emptyImageFilter } from './../utils/mixins'
+
 export default {
+  mixins: [emptyImageFilter],
   props: {
     user: {
       // 資料(唯獨)直接帶入 profile card
@@ -70,11 +75,36 @@ export default {
       required: true,
     }
   },
+  watch: {
+    initialFollowing(newValue) {
+      this.initialFollowing = newValue
+    }
+  },
   methods: {
-    followingHandler (boolean) {
-      // 向頁面傳送「追蹤狀態」 true/false
-      this.$emit('following-handler', boolean)
+    async addFollowing (userId) {
+      try {
+        const { data } = await usersAPI.addFollowing({userId})
+        if (data.status !== 'success') throw new Error(data.status)
+        this.$emit('following-handler', true)        
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法追蹤使用者，請稍後再試'
+        })
+      }
     },
+    async deleteFollowing(userId) {
+      try {
+        const { data } = await usersAPI.deleteFollowing({userId})
+        if (data.status !== 'success') throw new Error(data.status)
+        this.$emit('following-handler', false)        
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消追蹤使用者，請稍後再試'
+        })
+      }
+    }
   }
 }
 </script>
