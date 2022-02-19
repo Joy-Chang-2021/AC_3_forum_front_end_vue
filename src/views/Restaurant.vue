@@ -79,19 +79,8 @@ export default {
       this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
     },
     afterCreateComment(payload) {
-      // 觸發事件
       // render 資料更新後的畫面
-      const { commentId, restaurantId, text } = payload
-      this.restaurantComments.push({
-        id: commentId,
-        RestaurantId: restaurantId,
-        text,
-        User: {
-          id: this.currentUser.id,
-          name: this.currentUser.name
-        },
-        createdAt: new Date()
-      })
+      this.restaurantComments.push(payload)
     }
   },
   computed: {
