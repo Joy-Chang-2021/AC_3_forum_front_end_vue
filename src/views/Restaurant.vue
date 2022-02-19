@@ -75,7 +75,7 @@ export default {
       }
     },
     afterDeleteComment(commentId) {
-      // Question: 刪除API指定資料後，會及時取得重整後的資料並更新畫面? 或要先內部渲染新畫面、待之後再取得資料?
+      // render 資料更新後的畫面
       this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
     },
     afterCreateComment(payload) {

@@ -6,6 +6,7 @@
       <blockquote class="blockquote mb-0">
         <button
           v-if="currentUser.isAdmin"
+          :disabled="isProcessing"
           @click.stop.prevent="handleDeleteButtonClick(comment.id)"
           type="button"
           class="btn btn-danger float-right"
@@ -29,17 +30,9 @@
 
 <script>
 import { fromNowFilter } from "../utils/mixins";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true, //驗證管理者身分
-  },
-  isAuthenticated: true, //驗證登入
-};
+import { mapState } from 'vuex'
+import commentsAPI from '../apis/comments'
+import { Toast } from '../utils/helpers'
 
 export default {
   props: {
@@ -48,16 +41,30 @@ export default {
       required: true,
     },
   },
-  data() {
+  data () {
     return {
-      currentUser: dummyUser.currentUser,
-    };
+      isProcessing: false
+    }
+  },
+  computed: {
+    ...mapState(['currentUser'])
   },
   mixins: [fromNowFilter],
   methods: {
-    handleDeleteButtonClick(commentId) {
-      // todo發送請求： API 伺服器刪除 id 為 commentId 的評論
-      this.$emit('after-delete-comment', commentId)
+    async handleDeleteButtonClick(commentId) {
+      try {
+        this.isProcessing = true
+        const { data } = await commentsAPI.delete({ commentId })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.$emit('after-delete-comment', commentId)
+        this.isProcessing = false
+      } catch (error) {
+        Toast({
+          icon: 'error',
+          title: '無法刪除評論，請稍後再試'
+        })
+        this.isProcessing = false
+      }
     }
   }
 };
