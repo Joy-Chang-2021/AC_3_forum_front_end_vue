@@ -33,6 +33,7 @@
       </div>
 
       <button
+        :disabled="isProcessing"
         type="submit"
         class="btn btn-primary"
       >
@@ -43,18 +44,10 @@
 </template>
 
 <script>
+import usersAPI from '../apis/users'
 import { emptyImageFilter } from './../utils/mixins'
-
-const dummyData = {
-  "id": 1,
-  "name": "root",
-  "email": "root@example.com",
-  "password": "$2a$10$PuyDBzahkLS4TDlwemz4MO9F7A9DhcFZByWzwHc7OhX1CHYQlTNuu",
-  "isAdmin": true,
-  "image": null,
-  "createdAt": "2022-01-24T13:30:57.000Z",
-  "updatedAt": "2022-01-24T13:30:57.000Z",
-}
+import { mapState } from 'vuex'
+import { Toast } from '../utils/helpers'
 
 export default {
   mixins: [emptyImageFilter],
@@ -62,13 +55,13 @@ export default {
     return {
       name: '',
       image: '',
-      // todo: renew updatedAt???
+      isProcessing: false
     }
   },
   methods: {
-    fetchUser() {
-      this.name = dummyData.name
-      this.image = dummyData.image
+    setUser() {
+      this.name = this.currentUser.name
+      this.image = this.currentUser.image
     },
     handleFileChange(e) {
       const { files } = e.target
@@ -79,16 +72,57 @@ export default {
         this.image = imageURL
       }
     },
-    handleSubmit(e) {
-      const form = e.target
-      const formData = new FormData(form)
-      // todo: 傳送資料至後端伺服器
-      // todo: also renew updatedAt???
-      console.log(formData)
+    async handleSubmit(e) {
+      try {
+        if (!this.name) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請填入使用者名稱'
+          })
+          return
+        }
+        this.isProcessing = true
+        const form = e.target
+        const formData = new FormData(form)
+        const { data }= await usersAPI.update({ 
+          userId: this.currentUser.id,
+          formData
+        })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.$router.push({ path: `/users/${this.currentUser.id}` })
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法編輯使用者資料，請稍後再試'
+        })
+        this.isProcessing = false
+      }
+    }
+  },
+  computed: {
+    ...mapState(['currentUser'])
+  },
+  watch: {
+    currentUser (newValue) {
+      this.setUser(newValue)
     }
   },
   created () {
-    this.fetchUser()
+    const { id } = this.$route.params
+    if (id.toString() !== this.currentUser.id.toString()) {
+      this.$router.push({ name: 'Not-found' })
+      return
+    }
+    this.setUser()
+  },
+  beforeRouteUpdate (to, from, next) {
+    const { id } = to.params
+    if (id.toString() !== this.currentUser.id.toString()) {
+      this.$router.push({ name: 'Not-found' })
+      return
+    }
+    this.setUser()
+    next()
   }
 }
 </script>
