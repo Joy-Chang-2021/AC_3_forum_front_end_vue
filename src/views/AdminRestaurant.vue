@@ -1,6 +1,7 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading" />
+    <div v-else class="row">
       <div class="col-md-12">
         <h1>{{ restaurant.name }}</h1>
         <span class="badge badge-secondary mt-1 mb-3">
@@ -42,13 +43,18 @@
     >回上一頁</button>
   </div>
 </template>
+
 <script>
+import Spinner from '../components/Spinner.vue'
 import { emptyImageFilter } from './../utils/mixins'
 import adminAPI from '../apis/admin'
 import { Toast } from '../utils/helpers'
 
 export default {
   name: 'AdminRestaurant',
+  components: {
+    Spinner
+  },
   mixins: [emptyImageFilter],
   data () {
     return {
@@ -61,7 +67,8 @@ export default {
         tel: '',
         address: '',
         description: ''
-      }
+      },
+      isLoading: true
     }
   },
   mounted () {
@@ -80,7 +87,9 @@ export default {
           categoryName: Category ? Category.name : '未分類',
           image, openingHours, tel, address, description
         }
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法取得餐廳資料，請稍後再試'
